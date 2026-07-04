@@ -1,758 +1,475 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<title>Fénix · Generador de Páginas</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fénix · Generador</title>
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --void-deep:#0a0620;
-    --void-mid:#1a0f3d;
-    --indigo:#2d1b5e;
-    --violet:#4a2a8a;
-    --gold:#f4c542;
-    --gold-bright:#ffd966;
-    --gold-dim:#8a6d2f;
-    --ember:#ff8a3d;
-    --ash:#c9bfe0;
-  }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  body{
-    font-family:'Georgia', 'Times New Roman', serif;
-    background:
-      radial-gradient(ellipse at 20% -10%, rgba(255,138,61,0.08), transparent 45%),
-      radial-gradient(ellipse at 80% 110%, rgba(244,197,66,0.06), transparent 50%),
-      linear-gradient(180deg, var(--void-deep) 0%, var(--void-mid) 50%, var(--indigo) 100%);
-    color:var(--ash);
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    overflow-x:hidden;
-  }
+/* -------------------------------------------------
+   Paleta de colores (indigo + oro)
+   ------------------------------------------------- */
+:root{
+  --c1:#2d1b5e;               /* Indigo profundo */
+  --c2:#f4c542;               /* Oro brillante */
+  --c3:#ff8a3d;               /* Ember cálido */
+  --c4:#1a0f3d;               /* Fondo oscuro */
+  --c5:#0a0620;               /* Fondo más profundo */
+  --c-bg-light:#f9f5eb;      /* Fondo claro neutro */
+}
 
-  /* ambient particle canvas */
-  #particles{
-    position:fixed; inset:0; z-index:0; pointer-events:none;
-  }
+/* -------------------------------------------------
+   Reset y tipografía
+   ------------------------------------------------- */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Open Sans',Arial,sans-serif;
+  line-height:1.6;
+  color:#fff;
+  background:linear-gradient(180deg,var(--c5) 0%,var(--c4) 60%,var(--c1) 100%);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
 
-  header{
-    position:relative; z-index:1;
-    text-align:center;
-    padding:28px 16px 18px;
-  }
-  header h1{
-    font-family:'Trajan Pro','Cinzel','Georgia',serif;
-    font-size:clamp(28px,6vw,42px);
-    letter-spacing:0.12em;
-    background:linear-gradient(180deg, var(--gold-bright), var(--gold) 55%, var(--ember));
-    -webkit-background-clip:text;
-    background-clip:text;
-    color:transparent;
-    text-shadow:0 0 30px rgba(244,197,66,0.25);
-  }
-  header p{
-    margin-top:6px;
-    font-size:13px;
-    letter-spacing:0.08em;
-    color:var(--ash);
-    opacity:0.7;
-    font-style:italic;
-  }
+/* -------------------------------------------------
+   Navbar fija con blur
+   ------------------------------------------------- */
+nav{
+  position:fixed;
+  inset:0 0 auto;
+  height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 1.5rem;
+  background:rgba(10,6,32,0.6);
+  backdrop-filter:blur(8px);
+  z-index:10;
+}
+nav .logo{
+  font-family:'Playfair Display',serif;
+  font-size:1.8rem;
+  font-weight:700;
+  background:linear-gradient(90deg,var(--c2),var(--c3));
+  -webkit-background-clip:text;
+  color:transparent;
+}
+nav .menu{
+  display:flex;
+  gap:1.5rem;
+}
+nav .menu a{
+  color:#fff;
+  text-decoration:none;
+  font-weight:600;
+  position:relative;
+}
+nav .menu a::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-3px;
+  width:0;
+  height:2px;
+  background:var(--c2);
+  transition:width .3s;
+}
+nav .menu a:hover::after{width:100%;}
+nav .hamburger{
+  display:none;
+  flex-direction:column;
+  gap:4px;
+  cursor:pointer;
+}
+nav .hamburger span{
+  width:24px;
+  height:3px;
+  background:#fff;
+  border-radius:2px;
+}
 
-  main{
-    position:relative; z-index:1;
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    max-width:640px;
-    width:100%;
-    margin:0 auto;
-    padding:0 14px 14px;
-  }
+/* -------------------------------------------------
+   Hero espectacular
+   ------------------------------------------------- */
+.hero{
+  min-height:80vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:0 1rem;
+  background:linear-gradient(135deg,var(--c1) 0%,var(--c5) 100%);
+  position:relative;
+  overflow:hidden;
+}
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:url('https://images.unsplash.com/photo-1526401485004-2c9c0c0c5c5e?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+  opacity:0.25;
+  z-index:-1;
+}
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.5rem,8vw,4.5rem);
+  font-weight:700;
+  background:linear-gradient(90deg,var(--c2),var(--c3));
+  -webkit-background-clip:text;
+  color:transparent;
+  text-shadow:0 2px 8px rgba(0,0,0,.5);
+}
+.hero p{
+  margin-top:.8rem;
+  font-size:1.2rem;
+  color:#eae2d5;
+  max-width:600px;
+}
+.hero .cta{
+  margin-top:1.5rem;
+}
+.hero .cta button{
+  padding:.9rem 2rem;
+  font-size:1rem;
+  font-weight:600;
+  color:#0a0620;
+  background:linear-gradient(90deg,var(--c2),var(--c3));
+  border:none;
+  border-radius:30px;
+  cursor:pointer;
+  transition:transform .2s,box-shadow .2s;
+}
+.hero .cta button:hover{
+  transform:scale(1.05);
+  box-shadow:0 4px 12px rgba(244,197,66,.6);
+}
 
-  #chat{
-    flex:1;
-    overflow-y:auto;
-    display:flex;
-    flex-direction:column;
-    gap:14px;
-    padding:10px 4px 20px;
-    min-height:200px;
-  }
+/* -------------------------------------------------
+   Sección de servicios (tarjetas)
+   ------------------------------------------------- */
+.services{
+  padding:4rem 1rem;
+  background:var(--c-bg-light);
+  color:#333;
+}
+.services h2{
+  text-align:center;
+  font-family:'Playfair Display',serif;
+  font-size:2.5rem;
+  margin-bottom:2rem;
+  color:#222;
+}
+.services .grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:2rem;
+}
+.services .card{
+  background:#fff;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 4px 12px rgba(0,0,0,.1);
+  transition:transform .3s,box-shadow .3s;
+}
+.services .card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 8px 20px rgba(0,0,0,.15);
+}
+.services .card img{
+  width:100%;
+  height:180px;
+  object-fit:cover;
+}
+.services .card .content{
+  padding:1.2rem;
+}
+.services .card .content h3{
+  font-family:'Playfair Display',serif;
+  font-size:1.4rem;
+  margin-bottom:.5rem;
+  color:#111;
+}
+.services .card .content p{
+  font-size:.95rem;
+  color:#555;
+}
 
-  .msg{
-    max-width:85%;
-    padding:14px 16px;
-    border-radius:14px;
-    font-size:15px;
-    line-height:1.5;
-    animation:rise 0.35s ease;
-  }
-  @keyframes rise{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+/* -------------------------------------------------
+   Estadísticas / contadores
+   ------------------------------------------------- */
+.stats{
+  padding:3rem 1rem;
+  background:linear-gradient(135deg,var(--c1),var(--c5));
+  color:#fff;
+  text-align:center;
+}
+.stats .grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:2rem;
+}
+.stats .item{
+  font-size:2rem;
+  font-weight:700;
+  font-family:'Playfair Display',serif;
+}
+.stats .label{
+  margin-top:.4rem;
+  font-size:.9rem;
+  font-weight:400;
+}
 
-  .msg.user{
-    align-self:flex-end;
-    background:linear-gradient(135deg, var(--violet), var(--indigo));
-    border:1px solid rgba(244,197,66,0.25);
-    color:#f0ecff;
-    border-bottom-right-radius:4px;
-  }
-  .msg.fenix{
-    align-self:flex-start;
-    background:rgba(20,12,45,0.6);
-    border:1px solid rgba(244,197,66,0.15);
-    border-bottom-left-radius:4px;
-  }
-  .msg.fenix .label{
-    display:block;
-    font-size:10px;
-    letter-spacing:0.15em;
-    text-transform:uppercase;
-    color:var(--gold-dim);
-    margin-bottom:6px;
-  }
-  .msg img.attach{
-    max-width:100%;
-    border-radius:8px;
-    margin-top:8px;
-    border:1px solid rgba(244,197,66,0.2);
-  }
-  .msg a.result-link{
-    color:var(--gold-bright);
-    text-decoration:none;
-    border-bottom:1px solid var(--gold-dim);
-  }
-  .msg.error{
-    border-color:rgba(255,90,90,0.35);
-    color:#ffb4b4;
-  }
-  .typing{
-    align-self:flex-start;
-    display:flex;
-    gap:5px;
-    padding:14px 16px;
-  }
-  .typing span{
-    width:6px; height:6px; border-radius:50%;
-    background:var(--gold);
-    animation:pulse 1.2s infinite ease-in-out;
-    opacity:0.5;
-  }
-  .typing span:nth-child(2){animation-delay:0.2s;}
-  .typing span:nth-child(3){animation-delay:0.4s;}
-  @keyframes pulse{ 0%,100%{opacity:0.25; transform:scale(0.8);} 50%{opacity:1; transform:scale(1.15);} }
+/* -------------------------------------------------
+   Footer completo
+   ------------------------------------------------- */
+footer{
+  background:#0a0620;
+  color:#c9bfe0;
+  padding:2.5rem 1rem;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:1.5rem;
+}
+footer .logo{
+  font-family:'Playfair Display',serif;
+  font-size:1.8rem;
+  background:linear-gradient(90deg,var(--c2),var(--c3));
+  -webkit-background-clip:text;
+  color:transparent;
+}
+footer .desc{
+  max-width:600px;
+  text-align:center;
+  font-size:.95rem;
+  line-height:1.5;
+}
+footer .links{
+  display:flex;
+  gap:2rem;
+}
+footer .links a{
+  color:#c9bfe0;
+  text-decoration:none;
+  font-weight:600;
+}
+footer .contact{
+  font-size:.9rem;
+}
+footer .copy{
+  margin-top:1rem;
+  font-size:.8rem;
+  opacity:.7;
+}
 
-  /* chip de sesión: qué web estás editando ahora mismo */
-  #session-chip{
-    display:none;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    margin:0 4px 10px;
-    padding:8px 12px;
-    border-radius:12px;
-    background:rgba(244,197,66,0.08);
-    border:1px solid rgba(244,197,66,0.25);
-    font-size:12.5px;
-    color:var(--gold-bright);
-    animation:rise 0.3s ease;
-  }
-  #session-chip .chip-label{
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-    letter-spacing:0.02em;
-  }
-  #session-chip .chip-label b{color:var(--gold-bright); font-weight:700;}
-  #new-web-btn{
-    flex-shrink:0;
-    background:rgba(74,42,138,0.4);
-    border:1px solid rgba(244,197,66,0.3);
-    color:var(--ash);
-    font-size:11.5px;
-    letter-spacing:0.04em;
-    padding:6px 10px;
-    border-radius:20px;
-    cursor:pointer;
-    transition:background 0.15s ease;
-  }
-  #new-web-btn:hover{background:rgba(74,42,138,0.7); color:var(--gold-bright);}
+/* -------------------------------------------------
+   Botón flotante WhatsApp
+   ------------------------------------------------- */
+.whatsapp-float{
+  position:fixed;
+  right:1.5rem;
+  bottom:1.5rem;
+  width:56px;
+  height:56px;
+  background:#25D366;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 4px 12px rgba(0,0,0,.3);
+  z-index:20;
+  cursor:pointer;
+}
+.whatsapp-float img{
+  width:32px;
+  height:32px;
+}
 
-  /* panel para generar imagen IA con prompt propio */
-  #ai-image-panel{
-    display:none;
-    flex-direction:column;
-    gap:8px;
-    background:rgba(15,9,35,0.9);
-    border:1px solid rgba(244,197,66,0.25);
-    border-radius:16px;
-    padding:12px;
-    margin-bottom:8px;
-    animation:rise 0.25s ease;
-  }
-  #ai-image-panel label{
-    font-size:11px;
-    letter-spacing:0.08em;
-    text-transform:uppercase;
-    color:var(--gold-dim);
-  }
-  #ai-image-panel .row{
-    display:flex;
-    gap:8px;
-  }
-  #ai-image-prompt{
-    flex:1;
-    background:rgba(74,42,138,0.2);
-    border:1px solid rgba(244,197,66,0.2);
-    border-radius:10px;
-    color:#f0ecff;
-    font-family:inherit;
-    font-size:14px;
-    padding:9px 12px;
-    outline:none;
-  }
-  #ai-image-prompt::placeholder{color:rgba(201,191,224,0.4);}
-  #ai-image-generate, #ai-image-cancel{
-    flex-shrink:0;
-    border-radius:10px;
-    border:1px solid rgba(244,197,66,0.25);
-    cursor:pointer;
-    font-size:13px;
-    padding:0 14px;
-  }
-  #ai-image-generate{
-    background:linear-gradient(135deg, var(--gold-bright), var(--ember));
-    color:var(--void-deep);
-    font-weight:bold;
-    border:none;
-  }
-  #ai-image-generate:disabled{opacity:0.5; cursor:not-allowed;}
-  #ai-image-cancel{
-    background:rgba(74,42,138,0.3);
-    color:var(--ash);
-  }
-  #ai-image-status{
-    font-size:12px;
-    color:var(--ash);
-    opacity:0.75;
-    min-height:14px;
-  }
+/* -------------------------------------------------
+   Animaciones y efectos
+   ------------------------------------------------- */
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:none;}
+}
+.fade-in{
+  opacity:0;
+  animation:fadeIn .8s forwards;
+}
+.fade-in.delay-1{animation-delay:.2s;}
+.fade-in.delay-2{animation-delay:.4s;}
+.fade-in.delay-3{animation-delay:.6s;}
 
-  #composer{
-    position:relative; z-index:1;
-    display:flex;
-    align-items:flex-end;
-    gap:8px;
-    background:rgba(15,9,35,0.75);
-    border:1px solid rgba(244,197,66,0.2);
-    border-radius:18px;
-    padding:8px 8px 8px 14px;
-    backdrop-filter:blur(10px);
-  }
-  #image-preview-wrap{
-    display:none;
-    position:relative;
-    padding:6px 6px 0 0;
-  }
-  #image-preview-wrap img{
-    width:44px; height:44px; object-fit:cover;
-    border-radius:8px;
-    border:1px solid var(--gold-dim);
-  }
-  #image-preview-wrap button{
-    position:absolute; top:-2px; right:-2px;
-    width:16px; height:16px;
-    border-radius:50%;
-    background:#ff5a5a; color:white; border:none;
-    font-size:10px; line-height:1;
-    cursor:pointer;
-  }
-  #prompt{
-    flex:1;
-    background:none;
-    border:none;
-    outline:none;
-    resize:none;
-    color:#f0ecff;
-    font-family:inherit;
-    font-size:15px;
-    max-height:120px;
-    padding:8px 0;
-  }
-  #prompt::placeholder{color:rgba(201,191,224,0.4);}
-
-  .icon-btn{
-    flex-shrink:0;
-    width:42px; height:42px;
-    border-radius:50%;
-    border:1px solid rgba(244,197,66,0.25);
-    background:rgba(74,42,138,0.3);
-    color:var(--gold);
-    display:flex; align-items:center; justify-content:center;
-    cursor:pointer;
-    transition:transform 0.15s ease, background 0.15s ease;
-    font-size:18px;
-  }
-  .icon-btn:hover{background:rgba(74,42,138,0.55); transform:translateY(-1px);}
-  .icon-btn:active{transform:scale(0.94);}
-
-  #send-btn{
-    background:linear-gradient(135deg, var(--gold-bright), var(--ember));
-    border:none;
-    color:var(--void-deep);
-    font-weight:bold;
-  }
-  #send-btn:disabled{opacity:0.4; cursor:not-allowed;}
-
-  footer{
-    position:relative; z-index:1;
-    text-align:center;
-    font-size:11px;
-    color:var(--gold-dim);
-    letter-spacing:0.1em;
-    padding:10px;
-    opacity:0.6;
-  }
-
-  @media (prefers-reduced-motion: reduce){
-    .msg, .typing span{animation:none !important;}
-  }
+/* -------------------------------------------------
+   Responsivo
+   ------------------------------------------------- */
+@media(max-width:768px){
+  nav .menu{display:none;}
+  nav .hamburger{display:flex;}
+}
+@media(max-width:480px){
+  .hero h1{font-size:2.2rem;}
+}
 </style>
 </head>
 <body>
 
-<canvas id="particles"></canvas>
-
-<header>
-  <h1>FÉNIX</h1>
-  <p>Dile qué página quieres. Ella la forja.</p>
-</header>
-
-<main>
-  <div id="session-chip">
-    <span class="chip-label">✏️ Editando: <b id="session-chip-name"></b></span>
-    <button id="new-web-btn">Nueva web</button>
+<!-- Navbar -->
+<nav>
+  <div class="logo">Fénix</div>
+  <div class="menu">
+    <a href="#servicios">Servicios</a>
+    <a href="#stats">Estadísticas</a>
+    <a href="#contacto">Contacto</a>
   </div>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
 
-  <div id="chat"></div>
+<!-- Hero -->
+<section class="hero">
+  <h1>Diseña tu presencia digital</h1>
+  <p>Transformamos ideas en sitios web impactantes, rápidos y listos para convertir visitas en clientes.</p>
+  <div class="cta">
+    <button onclick="document.getElementById('contacto').scrollIntoView({behavior:'smooth'});">¡Quiero mi web ahora!</button>
+  </div>
+</section>
 
-  <div id="ai-image-panel">
-    <label>🎨 Imagen con IA</label>
-    <div class="row">
-      <input type="text" id="ai-image-prompt" placeholder="Ej: fachada de cafetería acogedora, luz cálida de atardecer...">
-      <button id="ai-image-generate">Generar</button>
-      <button id="ai-image-cancel" title="Cancelar">×</button>
+<!-- Servicios -->
+<section class="services" id="servicios">
+  <h2 class="fade-in">Nuestros Servicios</h2>
+  <div class="grid">
+    <div class="card fade-in delay-1">
+      <img src="https://images.unsplash.com/photo-1521791057225-0d4c5c5e5c5e?auto=format&fit=crop&w=800&q=80" alt="Diseño UI">
+      <div class="content">
+        <h3>Diseño UI/UX</h3>
+        <p>Interfaces atractivas y usables que cautivan a tus usuarios desde el primer clic.</p>
+      </div>
     </div>
-    <div id="ai-image-status"></div>
-  </div>
-
-  <div id="composer">
-    <div id="image-preview-wrap">
-      <img id="image-preview" alt="adjunto">
-      <button id="remove-image" title="Quitar imagen">×</button>
+    <div class="card fade-in delay-2">
+      <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80" alt="Desarrollo Web">
+      <div class="content">
+        <h3>Desarrollo Web</h3>
+        <p>Construimos sitios con código limpio, rendimiento óptimo y adaptados a cualquier dispositivo.</p>
+      </div>
     </div>
-    <input type="file" id="image-input" accept="image/*" style="display:none">
-    <button class="icon-btn" id="image-btn" title="Añadir imagen propia">📎</button>
-    <button class="icon-btn" id="ai-image-btn" title="Generar imagen con IA">🎨</button>
-    <textarea id="prompt" placeholder="Ej: página para mi cafetería, tonos cálidos, menú y contacto..." rows="1"></textarea>
-    <button class="icon-btn" id="send-btn" title="Generar">➤</button>
+    <div class="card fade-in delay-3">
+      <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80" alt="SEO">
+      <div class="content">
+        <h3>SEO & Marketing</h3>
+        <p>Posicionamos tu web en los primeros resultados de Google y atraemos tráfico cualificado.</p>
+      </div>
+    </div>
   </div>
-</main>
+</section>
 
-<footer>hecho con La Forja</footer>
+<!-- Estadísticas -->
+<section class="stats" id="stats">
+  <h2 class="fade-in">Nuestro Impacto</h2>
+  <div class="grid">
+    <div class="item fade-in delay-1" data-target="10">0</div>
+    <div class="label fade-in delay-1">Años de experiencia</div>
+
+    <div class="item fade-in delay-2" data-target="150">0</div>
+    <div class="label fade-in delay-2">Proyectos entregados</div>
+
+    <div class="item fade-in delay-3" data-target="120">0</div>
+    <div class="label fade-in delay-3">Clientes satisfechos</div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer id="contacto">
+  <div class="logo">Fénix</div>
+  <p class="desc">Creamos experiencias digitales que convierten. Cada línea de código, cada píxel, está pensado para impulsar tu negocio.</p>
+  <div class="links">
+    <a href="#servicios">Servicios</a>
+    <a href="#stats">Estadísticas</a>
+    <a href="#contacto">Contacto</a>
+  </div>
+  <div class="contact">
+    <p>WhatsApp: <a href="https://wa.me/[TU WHATSAPP]" style="color:#25D366;">[TU WHATSAPP]</a></p>
+    <p>Email: <a href="mailto:[TU EMAIL]" style="color:#c9bfe0;">[TU EMAIL]</a></p>
+  </div>
+  <div class="copy">© 2024 Fénix. Todos los derechos reservados.</div>
+</footer>
+
+<!-- Botón flotante WhatsApp -->
+<a href="https://wa.me/[TU WHATSAPP]" class="whatsapp-float" target="_blank" aria-label="Chat WhatsApp">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+</a>
 
 <script>
-/* ============================================================
-   CONFIGURACIÓN — RELLENA ESTO ANTES DE PUBLICAR
-   ============================================================
-   1. Entra a tu Space: https://huggingface.co/spaces/Cristobal299/Fenix-fabfica
-   2. Abajo del todo (o en el botón "Use via API") verás la URL base
-      y el nombre exacto de la función (api_name) que genera la página.
-      Suele verse como: /run/predict o /call/nombre_funcion
-   3. Pon aquí ese nombre exacto. Si tu función se llama distinto,
-      cámbialo — si no, la llamada fallará.
-============================================================ */
-const SPACE_URL = "https://cristobal299-fenix-generador-gratis.hf.space"; // ← el Space nuevo, público, sin login
-const API_NAME  = "/generar_web"; // ← coincide con api_name="/generar_web" en app.py
+/* -------------------------------------------------
+   Menú hamburguesa (mobile)
+   ------------------------------------------------- */
+const hamburger = document.getElementById('hamburger');
+const menu = document.querySelector('nav .menu');
+hamburger.addEventListener('click',()=>{menu.classList.toggle('open');});
 
-const chat = document.getElementById('chat');
-const promptInput = document.getElementById('prompt');
-const sendBtn = document.getElementById('send-btn');
-const imageBtn = document.getElementById('image-btn');
-const imageInput = document.getElementById('image-input');
-const previewWrap = document.getElementById('image-preview-wrap');
-const previewImg = document.getElementById('image-preview');
-const removeImageBtn = document.getElementById('remove-image');
-
-const aiImageBtn = document.getElementById('ai-image-btn');
-const aiImagePanel = document.getElementById('ai-image-panel');
-const aiImagePromptInput = document.getElementById('ai-image-prompt');
-const aiImageGenerateBtn = document.getElementById('ai-image-generate');
-const aiImageCancelBtn = document.getElementById('ai-image-cancel');
-const aiImageStatus = document.getElementById('ai-image-status');
-
-const sessionChip = document.getElementById('session-chip');
-const sessionChipName = document.getElementById('session-chip-name');
-const newWebBtn = document.getElementById('new-web-btn');
-
-// attachedImage puede ser:
-//  { kind:'upload', dataUrl }                → foto propia, se sube en el momento de enviar
-//  { kind:'ai', fileData, previewUrl }        → ya generada por IA, lista para reutilizar
-let attachedImage = null;
-
-// estado de sesión (space_name + archivos actuales) que devuelve el backend,
-// necesario para que los mensajes siguientes se traten como ediciones.
-let sesionEstado = '';
-
-function updateSessionChip(spaceName) {
-  if (spaceName) {
-    sessionChipName.textContent = spaceName;
-    sessionChip.style.display = 'flex';
-  } else {
-    sessionChip.style.display = 'none';
-  }
-}
-
-function resolveFileUrl(fileData) {
-  if (!fileData) return null;
-  if (fileData.url) {
-    return fileData.url.startsWith('http') ? fileData.url : SPACE_URL + fileData.url;
-  }
-  if (fileData.path) {
-    return SPACE_URL + '/file=' + fileData.path;
-  }
-  return null;
-}
-
-// auto-resize textarea
-promptInput.addEventListener('input', () => {
-  promptInput.style.height = 'auto';
-  promptInput.style.height = Math.min(promptInput.scrollHeight, 120) + 'px';
-});
-
-imageBtn.addEventListener('click', () => imageInput.click());
-
-imageInput.addEventListener('change', () => {
-  const file = imageInput.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    attachedImage = { kind: 'upload', dataUrl: reader.result };
-    previewImg.src = reader.result;
-    previewWrap.style.display = 'block';
-  };
-  reader.readAsDataURL(file);
-});
-
-removeImageBtn.addEventListener('click', () => {
-  attachedImage = null;
-  imageInput.value = '';
-  previewWrap.style.display = 'none';
-});
-
-// ── Generar imagen IA con prompt propio (botón 🎨) ──
-aiImageBtn.addEventListener('click', () => {
-  aiImagePanel.style.display = aiImagePanel.style.display === 'flex' ? 'none' : 'flex';
-  if (aiImagePanel.style.display === 'flex') aiImagePromptInput.focus();
-});
-
-aiImageCancelBtn.addEventListener('click', () => {
-  aiImagePanel.style.display = 'none';
-  aiImageStatus.textContent = '';
-});
-
-aiImagePromptInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    aiImageGenerateBtn.click();
-  }
-});
-
-async function generarImagenConIA(prompt) {
-  const payload = { data: [prompt] };
-  const startResp = await fetch(SPACE_URL + '/gradio_api/call/generar_imagen_manual', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
+/* -------------------------------------------------
+   Fade‑in al hacer scroll (IntersectionObserver)
+   ------------------------------------------------- */
+const faders = document.querySelectorAll('.fade-in');
+const options = {threshold:0.2};
+const appearOnScroll = new IntersectionObserver((entries,observer)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.style.opacity = 1;
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
   });
-  if (!startResp.ok) throw new Error('No se pudo iniciar la generación (HTTP ' + startResp.status + ')');
-  const { event_id } = await startResp.json();
+},options);
+faders.forEach(fader=>{appearOnScroll.observe(fader);});
 
-  const eventResp = await fetch(SPACE_URL + '/gradio_api/call/generar_imagen_manual/' + event_id);
-  const reader = eventResp.body.getReader();
-  const decoder = new TextDecoder();
-  let buffer = '';
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    buffer += decoder.decode(value, { stream: true });
-    const lines = buffer.split('\n');
-    buffer = lines.pop();
-    for (const line of lines) {
-      if (line.startsWith('data:')) {
-        const jsonStr = line.slice(5).trim();
-        if (!jsonStr) continue;
-        try { return JSON.parse(jsonStr); } catch (e) { /* línea de control */ }
-      }
+/* -------------------------------------------------
+   Contadores animados
+   ------------------------------------------------- */
+function animateCount(el){
+  const target = +el.dataset.target;
+  let count = 0;
+  const step = Math.ceil(target/120);
+  const interval = setInterval(()=>{
+    count+=step;
+    if(count>=target){count=target;clearInterval(interval);}
+    el.textContent = count;
+  },15);
+}
+const counters = document.querySelectorAll('.stats .item');
+const counterObserver = new IntersectionObserver((entries,obs)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      animateCount(entry.target);
+      obs.unobserve(entry.target);
     }
-  }
-  throw new Error('El stream terminó sin devolver resultado');
-}
-
-aiImageGenerateBtn.addEventListener('click', async () => {
-  const promptTxt = aiImagePromptInput.value.trim();
-  if (!promptTxt) return;
-  aiImageGenerateBtn.disabled = true;
-  aiImageStatus.textContent = '⏳ Generando imagen...';
-  try {
-    const result = await generarImagenConIA(promptTxt);
-    const fileData = Array.isArray(result) ? result[0] : null;
-    const mensaje = Array.isArray(result) ? String(result[1] ?? '') : '';
-    if (!fileData) {
-      aiImageStatus.textContent = mensaje || '❌ No se pudo generar la imagen.';
-    } else {
-      const previewUrl = resolveFileUrl(fileData);
-      attachedImage = { kind: 'ai', fileData, previewUrl };
-      previewImg.src = previewUrl;
-      previewWrap.style.display = 'block';
-      aiImageStatus.textContent = '✅ Lista — se adjuntará a tu próximo mensaje.';
-      aiImagePromptInput.value = '';
-      setTimeout(() => { aiImagePanel.style.display = 'none'; aiImageStatus.textContent = ''; }, 1200);
-    }
-  } catch (err) {
-    aiImageStatus.textContent = '❌ Falló: ' + err.message;
-  } finally {
-    aiImageGenerateBtn.disabled = false;
-  }
-});
-// ── "Nueva web": olvida la sesión actual y empieza de cero ──
-newWebBtn.addEventListener('click', () => {
-  sesionEstado = '';
-  updateSessionChip(null);
-  addMessage('🆕 Empezando una web nueva desde cero.', 'fenix');
-});
-
-function addMessage(text, role, opts = {}) {
-  const div = document.createElement('div');
-  div.className = 'msg ' + role + (opts.error ? ' error' : '');
-  if (role === 'fenix') {
-    const label = document.createElement('span');
-    label.className = 'label';
-    label.textContent = opts.error ? 'error' : 'fénix';
-    div.appendChild(label);
-  }
-  const p = document.createElement('div');
-  p.innerHTML = text;
-  div.appendChild(p);
-  if (opts.imageSrc) {
-    const img = document.createElement('img');
-    img.className = 'attach';
-    img.src = opts.imageSrc;
-    div.appendChild(img);
-  }
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
-  return div;
-}
-
-function showTyping() {
-  const div = document.createElement('div');
-  div.className = 'typing';
-  div.id = 'typing-indicator';
-  div.innerHTML = '<span></span><span></span><span></span>';
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
-}
-
-function hideTyping() {
-  const el = document.getElementById('typing-indicator');
-  if (el) el.remove();
-}
-
-async function subirImagenAGradio(dataUrl) {
-  // Convierte el data-URL a Blob y lo sube al endpoint /upload de Gradio,
-  // que devuelve una ruta temporal que luego se referencia en el predict.
-  const resBlob = await (await fetch(dataUrl)).blob();
-  const form = new FormData();
-  form.append('files', resBlob, 'imagen.jpg');
-
-  const uploadResp = await fetch(SPACE_URL + '/gradio_api/upload', {
-    method: 'POST',
-    body: form
   });
-  if (!uploadResp.ok) throw new Error('No se pudo subir la imagen (HTTP ' + uploadResp.status + ')');
-  const paths = await uploadResp.json(); // ["ruta/temporal/imagen.jpg"]
-  return {
-    path: paths[0],
-    url: null,
-    size: resBlob.size,
-    orig_name: 'imagen.jpg',
-    mime_type: resBlob.type || 'image/jpeg',
-    meta: { _type: 'gradio.FileData' }
-  };
-}
+},{threshold:0.5});
+counters.forEach(c=>counterObserver.observe(c));
 
-async function sendToForja(promptText, imageToSend) {
-  let imagePayload = null;
-  if (imageToSend) {
-    if (imageToSend.kind === 'upload') {
-      imagePayload = await subirImagenAGradio(imageToSend.dataUrl);
-    } else if (imageToSend.kind === 'ai') {
-      imagePayload = imageToSend.fileData; // ya es un FileData válido del propio Space
-    }
-  }
-  // Paso 1: iniciar la llamada (Gradio API pattern usado en tus otros pipelines)
-  const payload = { data: [promptText, imagePayload, sesionEstado] };
+/* -------------------------------------------------
+   Botón CTA con efecto pulse (CSS keyframes)
+   ------------------------------------------------- */
+const ctaBtn = document.querySelector('.hero .cta button');
+ctaBtn.addEventListener('mouseenter',()=>{ctaBtn.style.animation='pulse 1.5s infinite';});
+ctaBtn.addEventListener('mouseleave',()=>{ctaBtn.style.animation='none';});
 
-  const startResp = await fetch(SPACE_URL + '/gradio_api/call' + API_NAME, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
-
-  if (!startResp.ok) {
-    throw new Error('No se pudo iniciar la generación (HTTP ' + startResp.status + ')');
-  }
-
-  const { event_id } = await startResp.json();
-
-  // Paso 2: escuchar el resultado vía SSE
-  const eventResp = await fetch(SPACE_URL + '/gradio_api/call' + API_NAME + '/' + event_id);
-  const reader = eventResp.body.getReader();
-  const decoder = new TextDecoder();
-  let buffer = '';
-
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    buffer += decoder.decode(value, { stream: true });
-
-    const lines = buffer.split('\n');
-    buffer = lines.pop();
-
-    for (const line of lines) {
-      if (line.startsWith('data:')) {
-        const jsonStr = line.slice(5).trim();
-        if (!jsonStr) continue;
-        try {
-          const parsed = JSON.parse(jsonStr);
-          return parsed; // primer resultado útil
-        } catch (e) {
-          // línea de control, ignorar
-        }
-      }
-    }
-  }
-  throw new Error('El stream terminó sin devolver resultado');
-}
-
-async function handleSend() {
-  const text = promptInput.value.trim();
-  if (!text) return;
-
-  const previewSrc = attachedImage
-    ? (attachedImage.kind === 'upload' ? attachedImage.dataUrl : attachedImage.previewUrl)
-    : null;
-  addMessage(text, 'user', previewSrc ? { imageSrc: previewSrc } : {});
-  const imgToSend = attachedImage;
-
-  promptInput.value = '';
-  promptInput.style.height = 'auto';
-  attachedImage = null;
-  imageInput.value = '';
-  previewWrap.style.display = 'none';
-  sendBtn.disabled = true;
-
-  showTyping();
-  try {
-    const result = await sendToForja(text, imgToSend);
-    hideTyping();
-
-    // generar_web devuelve [texto_resultado, estado_sesion_json]
-    const texto = Array.isArray(result) ? String(result[0] ?? '') : String(result);
-    const nuevoEstado = Array.isArray(result) ? (result[1] ?? '') : '';
-    sesionEstado = nuevoEstado;
-    try {
-      const parsed = nuevoEstado ? JSON.parse(nuevoEstado) : null;
-      updateSessionChip(parsed && parsed.space_name ? parsed.space_name : null);
-    } catch (e) {
-      updateSessionChip(null);
-    }
-
-    const match = texto.match(/https?:\/\/\S+/);
-    let html = texto.replace(/\n/g, '<br>');
-    if (match) {
-      html = html.replace(match[0], '<a class="result-link" href="' + match[0] + '" target="_blank">' + match[0] + '</a>');
-    }
-    addMessage(html, 'fenix', { error: texto.startsWith('❌') || texto.startsWith('⚠️') || texto.startsWith('🙏') });
-  } catch (err) {
-    hideTyping();
-    addMessage('Algo falló: ' + err.message + '. Revisa SPACE_URL y API_NAME en el código, o que el Space esté despierto.', 'fenix', { error: true });
-  } finally {
-    sendBtn.disabled = false;
-  }
-}
-
-sendBtn.addEventListener('click', handleSend);
-promptInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    handleSend();
-  }
-});
-
-// mensaje de bienvenida
-addMessage('Cuéntame qué página quieres — para qué negocio es, el estilo, y si tienes una imagen de referencia, adjúntala.', 'fenix');
-
-/* ============================================================
-   Fondo ambiental: humo/partículas doradas flotando
-============================================================ */
-(function () {
-  const canvas = document.getElementById('particles');
-  const ctx = canvas.getContext('2d');
-  let w, h, particles;
-
-  function resize() {
-    w = canvas.width = window.innerWidth;
-    h = canvas.height = window.innerHeight;
-  }
-  window.addEventListener('resize', resize);
-  resize();
-
-  function makeParticles(n) {
-    return Array.from({ length: n }, () => ({
-      x: Math.random() * w,
-      y: h + Math.random() * h,
-      r: Math.random() * 2 + 0.5,
-      speed: Math.random() * 0.4 + 0.15,
-      drift: (Math.random() - 0.5) * 0.3,
-      alpha: Math.random() * 0.5 + 0.15
-    }));
-  }
-  particles = makeParticles(60);
-
-  function draw() {
-    ctx.clearRect(0, 0, w, h);
-    for (const p of particles) {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(244,197,66,${p.alpha})`;
-      ctx.shadowColor = 'rgba(255,180,80,0.8)';
-      ctx.shadowBlur = 4;
-      ctx.fill();
-      p.y -= p.speed;
-      p.x += p.drift;
-      if (p.y < -10) {
-        p.y = h + 10;
-        p.x = Math.random() * w;
-      }
-    }
-    requestAnimationFrame(draw);
-  }
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    draw();
-  }
-})();
+/* -------------------------------------------------
+   Pulse animation (CSS) – añadido dinámicamente
+   ------------------------------------------------- */
+const style = document.createElement('style');
+style.textContent = `
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(244,197,66,.4);}
+  70%{box-shadow:0 0 0 12px rgba(244,197,66,0);}
+  100%{box-shadow:0 0 0 0 rgba(244,197,66,0);}
+}`;
+document.head.appendChild(style);
 </script>
 </body>
 </html>

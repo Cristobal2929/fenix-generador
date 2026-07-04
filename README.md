@@ -1,5 +1,5 @@
-title: Fénix Generador
-description: Interfaz web para crear páginas mediante el modelo Fénix.
+---
+name: fenix-generador
+description: Página web de una sola página para el generador Fénix, con hero espectacular, servicios, estadísticas y contacto.
 sdk: static
-colorFrom: indigo
-colorTo: purple
+---
